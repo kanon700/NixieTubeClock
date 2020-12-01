@@ -18,7 +18,7 @@ void rtc_data_mask(NixieRtcHandle hrtc);
 HAL_StatusTypeDef rtc_check_vl(uint8_t reg);
 
 void nixie_rtc_init(NixieRtcHandle hrtc){
-  hrtc->reg.addr = rtc_mm_ctrl2;
+  hrtc->reg.addr = rtc_mm_sec;
   HAL_I2C_Master_Transmit(&hi2c1, RTC8564_ADDR, &hrtc->reg.addr, 1, I2C_TIMEOUT);
   HAL_I2C_Master_Receive(&hi2c1, RTC8564_ADDR, &hrtc->reg.sec, 1, I2C_TIMEOUT);
 
@@ -33,8 +33,12 @@ void nixie_rtc_ctrl(NixieRtcHandle hrtc){
   rtc_read_time(hrtc);
 }
 
+void nixie_rtc_set_time(NixieRtcHandle hrtc){
+  rtc_set_time(hrtc);
+}
+
 void rtc_read_time(NixieRtcHandle hrtc){
-  hrtc->reg.addr = rtc_mm_ctrl2;
+  hrtc->reg.addr = rtc_mm_sec;
   HAL_I2C_Master_Transmit(&hi2c1, RTC8564_ADDR, &hrtc->reg.addr, 1, I2C_TIMEOUT);
   HAL_I2C_Master_Receive(&hi2c1, RTC8564_ADDR, &hrtc->reg.sec, RTC8564_REG_TIME, I2C_TIMEOUT);
   rtc_data_mask(hrtc);
@@ -44,7 +48,7 @@ void rtc_read_time(NixieRtcHandle hrtc){
 
 void rtc_set_time(NixieRtcHandle hrtc){
   rtc_write_single_data(hrtc, rtc_mm_ctrl1, CLOCK_STOP);
-  rtc_write_all_time(hrtc);
+  rtc_write_all_reg(hrtc);
   rtc_write_single_data(hrtc, rtc_mm_ctrl1, CLOCK_START);
 }
 
@@ -60,7 +64,7 @@ void rtc_write_all_time(NixieRtcHandle hrtc){
 }
 
 void rtc_write_all_reg(NixieRtcHandle hrtc){
-  hrtc->reg.addr = rtc_mm_addr;
+  hrtc->reg.addr = rtc_mm_ctrl1;
   HAL_I2C_Master_Transmit(&hi2c1, RTC8564_ADDR, hrtc->regall, RTC8564_REGALL, I2C_TIMEOUT);
 }
 

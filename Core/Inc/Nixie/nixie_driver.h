@@ -24,18 +24,18 @@ typedef struct{
   uint32_t last_time;
   union{
     struct{
-      uint8_t no1;
-      uint8_t no2;
-      uint8_t no3;
-      uint8_t no4;
-      uint8_t no5;
-      uint8_t no6;
+      uint8_t tube1_num;
+      uint8_t tube2_num;
+      uint8_t tube3_num;
+      uint8_t tube4_num;
+      uint8_t tube5_num;
+      uint8_t tube6_num;
     }tube;
     uint8_t tubeall[TUBE_ALL];
   };
 }NixieDriverHandle_t;
 typedef NixieDriverHandle_t* NixieDriverHandle;
 
-extern void nixie_driver_task(uint32_t num);
+extern void nixie_driver_task(uint32_t num, NixieDriveTubeHandle_t tube);
 
 #endif /* INC_NIXIE_NIXIE_DRIVER_H_ */

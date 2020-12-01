@@ -8,6 +8,7 @@
 #ifndef INC_NIXIE_NIXIE_MAIN_H_
 #define INC_NIXIE_NIXIE_MAIN_H_
 
+#include "nixie_common.h"
 #include "nixie_rtc.h"
 #include "nixie_ui.h"
 
@@ -18,8 +19,7 @@ typedef enum{
   MODE_CLOCK = 0,
   MODE_CALENDAR,
   MODE_TIMER,
-  MODE_SETTING,
-  MODE_OFF
+  MODE_SETTING
 }NIXIE_MODE_t;
 
 typedef enum{
@@ -37,6 +37,25 @@ typedef enum{
   PHASE_SET5,
   PHASE_SET1,
 } DG_PHASE_t;
+
+typedef enum{
+  DRIVE_OFF = 0,
+  DRIVE_12,
+  DRIVE_34,
+  DRIVE_56,
+  DRIVE_ALL
+} DRIVE_SEL_TUBE_t;
+
+typedef enum{
+  SETTING_PHASE_NONE = 0,
+  SETTING_PHASE_SEC,
+  SETTING_PHASE_MIN,
+  SETTING_PHASE_HOUR,
+  SETTING_PHASE_DAY,
+  SETTING_PHASE_MONTH,
+  SETTING_PHASE_YEAR,
+  SETTING_PHASE_END
+} SETTING_PHASE_t;
 
 typedef struct{
   uint8_t tube[6];
@@ -63,6 +82,19 @@ typedef struct{
     uint32_t now;
     uint32_t time;
   } timer;
+  struct{
+    DRIVE_SEL_TUBE_t sel;
+    SETTING_PHASE_t phase;
+    struct{
+      uint8_t sec;
+      uint8_t min;
+      uint8_t hour;
+      uint8_t day;
+      uint8_t month;
+      uint8_t year;
+    }time;
+  } settings;
+  NixieDriveTubeHandle_t tube;
   NixieDiverGenceHandle_t dg;
 
 }NixieMainHandle_t;

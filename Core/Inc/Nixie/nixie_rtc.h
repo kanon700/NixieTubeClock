@@ -17,8 +17,7 @@
 #define RTC8564_REG_TIME 7
 
 typedef enum{
-  rtc_mm_addr = 0x00,
-  rtc_mm_ctrl1,
+  rtc_mm_ctrl1 = 0x00,
   rtc_mm_ctrl2,
   rtc_mm_sec,
   rtc_mm_min,
@@ -66,5 +65,6 @@ typedef NixieRtcHandle_t* NixieRtcHandle;
 
 extern void nixie_rtc_init(NixieRtcHandle hrtc);
 extern void nixie_rtc_ctrl(NixieRtcHandle hrtc);
+extern void nixie_rtc_set_time(NixieRtcHandle hrtc);
 
 #endif /* INC_NIXIE_NIXIE_RTC_H_ */

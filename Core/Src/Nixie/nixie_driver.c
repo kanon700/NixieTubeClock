@@ -7,6 +7,7 @@
 
 #include "stm32f3xx_hal.h"
 #include "gpio.h"
+#include "nixie_common.h"
 #include "nixie_driver.h"
 
 NixieDriverHandle_t hdriver = {0};
@@ -14,20 +15,22 @@ NixieDriverHandle_t hdriver = {0};
 static void select_drive_nixietube(uint8_t sel);
 static void all_off_nixietube(void);
 static void control_timing(void);
-static void drive_nixie(void);
+static void drive_nixie(NixieDriveTubeHandle_t tube);
 static void calc_set_num(uint32_t num);
 static void set_num_on_nixietube(uint8_t num);
 
-void nixie_driver_task(uint32_t num){
+void nixie_driver_task(uint32_t num, NixieDriveTubeHandle_t tube){
   calc_set_num(num);
   control_timing();
-  drive_nixie();
+  drive_nixie(tube);
 }
 
-void drive_nixie(void){
+void drive_nixie(NixieDriveTubeHandle_t tube){
   if(hdriver.phase == PHASE_ON){
     set_num_on_nixietube(hdriver.tubeall[hdriver.sel_tube]);
-    select_drive_nixietube(hdriver.sel_tube);
+    if(tube.all[hdriver.sel_tube] == NIXIE_DRIVE_ON){
+      select_drive_nixietube(hdriver.sel_tube);
+    }
   }
   else{
     all_off_nixietube();
@@ -50,11 +53,6 @@ void control_timing(void){
     hdriver.phase = PHASE_ON;
   }
 }
-
-/*
- * ダイナミック点灯は常に裏で動いていて、上位で各管の点ける/点けないを制御する仕組みが必要
- * 各巻ごとにフラグを持って、それに応じて点ける点けないでいけるかなぁ。
- */
 
 void select_drive_nixietube(TUBU_NUM_t sel){
   switch(sel){
@@ -91,12 +89,12 @@ void all_off_nixietube(void){
 }
 
 void calc_set_num(uint32_t num){
-  hdriver.tube.no1 = num % 10;
-  hdriver.tube.no2 = (num % 100)     / 10;
-  hdriver.tube.no3 = (num % 1000)    / 100;
-  hdriver.tube.no4 = (num % 10000)   / 1000;
-  hdriver.tube.no5 = (num % 100000)  / 10000;
-  hdriver.tube.no6 = (num % 1000000) / 100000;
+  hdriver.tube.tube1_num = num % 10;
+  hdriver.tube.tube2_num = (num % 100)     / 10;
+  hdriver.tube.tube3_num = (num % 1000)    / 100;
+  hdriver.tube.tube4_num = (num % 10000)   / 1000;
+  hdriver.tube.tube5_num = (num % 100000)  / 10000;
+  hdriver.tube.tube6_num = (num % 1000000) / 100000;
 }
 
 // nixie管トップビューとボトムビュー間違えたのでそれに合わせてON箇所をスワップしてる。

@@ -7,12 +7,10 @@
 
 #include "main.h"
 
-// 2桁のBCDを２桁のDECに変換する
 uint8_t nixie_bcd2dec(uint8_t bcd){
-  uint8_t a1,a2;
+  return (bcd/16*10) + (bcd%16);
+}
 
-  a1 = bcd & 0x0f;
-  a2 = (bcd >> 4) & 0x0f;
-
-  return a2 * 10 + a1;
+uint8_t nixie_dec2bcd(uint8_t dec){
+  return (dec/10*16) + (dec%10);
 }
